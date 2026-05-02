@@ -21,4 +21,15 @@ public class UserRepositoryAdapter implements UserGateway {
         return userRepository.findByEmail(email)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public User save(User user) {
+        var saved = userRepository.save(mapper.toEntity(user));
+        return mapper.toDomain(saved);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
