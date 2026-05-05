@@ -1,7 +1,10 @@
 package com.lucas.secure_api_demo.infrastructure.controller;
 
 import com.lucas.secure_api_demo.application.dto.RegisterUserInput;
+import com.lucas.secure_api_demo.application.dto.AuthUserOutput;
+import com.lucas.secure_api_demo.application.dto.ValidateUserInput;
 import com.lucas.secure_api_demo.application.ports.inbound.RegisterUserUseCase;
+import com.lucas.secure_api_demo.application.ports.inbound.ValidateUserUseCase;
 import com.lucas.secure_api_demo.infrastructure.controller.dto.UserResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,13 +18,20 @@ import java.net.URI;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private RegisterUserUseCase register;
+    private final RegisterUserUseCase register;
+    private final ValidateUserUseCase validate;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserInput input) {
         var user = register.create(input);
         var uri = URI.create("/users/" + user.getId());
         return ResponseEntity.created(uri).body(UserResponse.from(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthUserOutput> login(@Valid @RequestBody ValidateUserInput input) {
+        var validUser = validate.validateCredentials(input);
+        return ResponseEntity.ok(validUser);
     }
 
     @GetMapping("/public")

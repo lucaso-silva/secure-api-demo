@@ -25,6 +25,7 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers("/auth/public").permitAll()
                                 .requestMatchers("/auth/register").permitAll()
+                                .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                 )
