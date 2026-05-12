@@ -26,6 +26,6 @@ public class ValidateUserUseCaseImpl implements ValidateUserUseCase {
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        return new AuthUserOutput(user.getId(), user.getRole());
+        return new AuthUserOutput(user.getId(), user.getEmail(), user.getRole());
     }
 }
