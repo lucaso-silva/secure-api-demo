@@ -43,6 +43,18 @@ public class JwtService {
         }
     }
 
+    public String extractEmail(String token){
+        return  extractClaims(token).getSubject();
+    }
+
+    public Long extractUserId(String token) {
+        return extractClaims(token).get("userId", Long.class);
+    }
+
+    public String extractRole(String token){
+        return extractClaims(token).get("role", String.class);
+    }
+
     private SecretKey getSignInKey(){
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
 

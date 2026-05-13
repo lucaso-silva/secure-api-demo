@@ -7,9 +7,11 @@ import com.lucas.secure_api_demo.application.ports.inbound.ValidateUserUseCase;
 import com.lucas.secure_api_demo.infrastructure.controller.dto.LoginResponse;
 import com.lucas.secure_api_demo.infrastructure.controller.dto.UserResponse;
 import com.lucas.secure_api_demo.infrastructure.security.JwtService;
+import com.lucas.secure_api_demo.infrastructure.security.dto.AuthUser;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -42,11 +44,26 @@ public class AuthController {
 
     @GetMapping("/public")
     public ResponseEntity<String> publicRoute(){
-        return ResponseEntity.ok("<h1>Public route access</h1>");
+        return ResponseEntity.ok("Public route access");
     }
 
     @GetMapping("/private")
     public ResponseEntity<String> privateRoute() {
-        return ResponseEntity.ok("<h1>Private route access</h1>");
+        return ResponseEntity.ok("Private route access");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AuthUser> getCurrentUser(@AuthenticationPrincipal AuthUser authUser) {
+        return ResponseEntity.ok(authUser);
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> adminRoute(){
+        return ResponseEntity.ok("Admin route access");
+    }
+
+    @GetMapping("/client")
+    public ResponseEntity<String> clientRoute(){
+        return ResponseEntity.ok("Client route access");
     }
 }
