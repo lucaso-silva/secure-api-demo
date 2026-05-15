@@ -20,10 +20,10 @@ public class ValidateUserUseCaseImpl implements ValidateUserUseCase {
     @Override
     public AuthUserOutput validateCredentials(ValidateUserInput input) {
         var user = userGateway.findByEmail(input.email())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if(!passwordEncoder.matches(input.password(), user.getPassword())) {
-            throw new InvalidCredentialsException("Invalid credentials");
+            throw new InvalidCredentialsException();
         }
 
         return new AuthUserOutput(user.getId(), user.getEmail(), user.getRole());
