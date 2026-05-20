@@ -1,95 +1,195 @@
-# Secure API Demo - Spring Security
+# Secure API Demo - Spring Security & JWT
 
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-enabled-green)
-![Status](https://img.shields.io/badge/status-under%20development-orange)
+![JWT](https://img.shields.io/badge/JWT-authentication-blue)
+![Status](https://img.shields.io/badge/status-learning%20project-blue)
 
-This project demonstrates the evolution of **Spring Security** in a Spring Boot API, from basic route protection to a custom authentication flow.
-
-## Overview
-
-The goal of this project is to explore how authentication works in practice, step by step:
-
-1. **Route protection with Spring Security**
-2. **Custom authentication (register + login)**
-3. *(Next step)* Stateless authentication using JWT
+This project demonstrates the evolution of **Spring Security** in a Spring Boot API, from basic route protection to a fully stateless authentication flow using JWT.
 
 ---
 
-## Tech Stack
+# Overview
 
-- Java 21  
-- Spring Boot  
-- Spring Security  
-- H2 Database  
-- Lombok  
+The goal of this project is to explore how authentication and authorization work in practice, step by step:
 
----
-
-## What is implemented
-
-### Public and Protected Routes
-
-- `/auth/public` → public endpoint  
-- `/auth/private` → protected endpoint (requires authentication)  
+1. Route protection with Spring Security
+2. Custom authentication (register + login)
+3. Stateless authentication and authorization with JWT
 
 ---
 
-### Custom Authentication Flow
+# Tech Stack
 
-Instead of relying on Spring Security’s default login, this project implements:
-
-- `/auth/register` → user registration  
-- `/auth/login` → credential validation  
-
----
-
-### Password Security
-
-- Passwords are encrypted using **BCrypt**
-- Password comparison is handled via `PasswordEncoder`
+* Java 21
+* Spring Boot
+* Spring Security
+* JWT (JJWT)
+* H2 Database
+* Lombok
 
 ---
 
-### Security Configuration
+# What is implemented
+
+## Public and Protected Routes
+
+* `/auth/public` → public endpoint
+* `/auth/private` → protected endpoint
+
+---
+
+## Custom Authentication Flow
+
+Instead of relying on Spring Security’s default login flow, this project implements custom endpoints for authentication:
+
+* `/auth/register` → user registration
+* `/auth/login` → user authentication
+
+Passwords are securely stored using **BCrypt**.
+
+---
+
+## JWT Authentication
+
+After successful login:
+
+* credentials are validated
+* a JWT token is generated
+* the client must send the token in subsequent requests
+
+Example:
+
+```http
+Authorization: Bearer <token>
+```
+
+The token includes:
+
+* user identity (`subject`)
+* user id
+* user role
+* expiration time
+
+---
+
+## JWT Authentication Filter
+
+The project includes a custom `JwtAuthenticationFilter` responsible for:
+
+* intercepting requests
+* extracting the JWT from the request header
+* validating the token
+* extracting claims
+* authenticating the user in Spring Security’s `SecurityContext`
+
+---
+
+## Role-Based Authorization
+
+The API supports authorization based on user roles.
+
+Examples:
+
+* `/auth/admin` → requires `OWNER`
+* `/auth/client` → requires `OWNER` or `CLIENT`
+
+Implemented using:
+
+* `hasRole(...)`
+* `hasAnyRole(...)`
+
+---
+
+## Error Handling
+
+Custom security handlers were implemented to standardize authentication and authorization errors:
+
+### 401 Unauthorized
+
+Returned when:
+
+* token is missing
+* token is invalid
+
+Handled by:
+
+* `CustomAuthenticationEntryPoint`
+
+---
+
+### 403 Forbidden
+
+Returned when:
+
+* the authenticated user does not have permission to access a resource
+
+Handled by:
+
+* `CustomAccessDeniedHandler`
+
+---
+
+## Global Exception Handling
+
+The project also includes:
+
+* `GlobalExceptionHandler`
+* standardized API error responses using `ProblemDetail`
+
+Validation errors return structured responses containing invalid fields and messages.
+
+---
+
+# Security Configuration
 
 Spring Security is configured to:
 
-- Allow access to authentication endpoints (`/auth/register`, `/auth/login`)  
-- Protect all other routes  
-- Use a **stateless session policy** (preparing for JWT)  
+* disable `formLogin`
+* disable `httpBasic`
+* use stateless session management
+* allow public authentication routes
+* protect private routes
+* authenticate requests through JWT
 
 ---
 
-## 📌 Current Status
+# 📌 Current Status
 
-This project is currently focused on:
+The application now supports:
 
-- Understanding authentication fundamentals  
-- Implementing a custom login flow  
-- Securing user credentials properly  
-
----
-
-## 🔜 Next Steps
-
-The next step is to evolve this API to a **stateless authentication model using JWT**, including:
-
-- Token generation  
-- Token validation  
-- Use of claims  
-- Custom authentication filter  
+* custom authentication flow
+* stateless JWT authentication
+* token validation
+* claims extraction
+* role-based authorization
+* standardized error handling
 
 ---
 
-## 📎 Related Content
+# 🔜 Possible Next Steps
+
+Potential future improvements:
+
+* refresh token flow
+* persistent database
+* UserDetailsService integration
+* token revocation / blacklist
+* integration and security tests
+
+---
+
+# 📎 Related Content
 
 This project is part of a learning series about Spring Security and JWT.
 
-- Post I → Route protection with Spring Security  
-- **Post II → User authentication (register + login)**  
-- Post III → *(coming next)* JWT authentication  
+* Post I → Route protection with Spring Security
+* Post II → Custom authentication (register + login)
+* **Post III → JWT authentication and authorization**
 
 ---
-[Lucas Oliveira](https://www.linkedin.com/in/lucas-oliveira10/)
+
+## Connect with me
+
+- LinkedIn: [Lucas Oliveira](https://www.linkedin.com/in/lucas-oliveira10/)
